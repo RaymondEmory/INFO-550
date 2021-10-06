@@ -2,7 +2,7 @@
 
 ## My project
 
-This project aims to look into the long term impact of COVID-19 on China's regional air quality through health and economic perspectives.
+This project aims to look into the long term impact of COVID-19 on China's regional air quality through health and economic perspectives. The data in this directory has already been pre-processed (missing data cleaning, grouping by variables) The Rmd document here deals with adding demogrphic data and plotting figures for eventual visualiztion purposes. 
 
 To analyze the data you will need to install some R packages. The required packages can be installed using R commands.
 `install.packages(dplyr)`
