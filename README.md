@@ -17,6 +17,15 @@ for(p in pkgs){
 	}
 } `
 
+`installed_pkgs <- row.names(installed.packages())
+pkgs <- c("readr", "tidyverse", "ggplot2", "data.table", "reshape2", "lubridate", "ggthemes", "scales" )
+for(p in pkgs){
+	if(!(p %in% install_pkgs)){
+		install.packages(p)
+	}
+}`
+
+
 ## Execute the analysis
 To execute the analysis, from the project folder you can run
 
