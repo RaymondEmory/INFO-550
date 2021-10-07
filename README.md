@@ -7,8 +7,10 @@ This project aims to look into the long term impact of COVID-19 on China's regio
 To analyze the data you will need to install some R packages. The required packages can be installed using R commands.
 
 
-` installed_pkgs <- row.names(installed.packages())`
-` pkgs <- c("dplyr", "ggplot2")
+` installed_pkgs <- row.names(installed.packages())
+
+pkgs <- c("dplyr", "ggplot2")
+
 for(p in pkgs){
 	if(!(p %in% install_pkgs)){
 		install.packages(p)
