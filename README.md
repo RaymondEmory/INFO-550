@@ -13,8 +13,7 @@ for(p in pkgs){
 	if(!(p %in% install_pkgs)){
 		install.packages(p)
 	}
-}
-'
+} '
 
 ## Execute the analysis
 To execute the analysis, from the project folder you can run
