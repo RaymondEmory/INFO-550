@@ -1,0 +1,88 @@
+---
+title: "HW 2"
+author: "Haoran Cheng"
+date: "9/21/2021"
+output: "html_document"
+---
+## set up folder as working directory
+```{r}
+setwd(dirname(rstudioapi::getSourceEditorContext()$path))
+```
+
+## load packages
+```{r}
+library(dplyr)
+library(ggplot2)
+library(tidyr)
+```
+
+## load file
+```{r}
+PM25<-read.csv("./processed.csv")
+PM25
+```
+
+
+##Summarize data for each city and region
+```{r}
+test<-newer%>%
+  mutate(af_all =case_when(species == "PM25"~ 1-1/exp(concentration*.00032),
+                           species == "PM10"~1-1/exp(concentration*.00038),
+                           species == "SO2"~1-1/exp(concentration*.00081*2.62),
+                           species == "NO2"~1-1/exp(concentration*.0013*1.88),
+                           species == "CO"~1-1/exp(concentration*.000037*1.145),
+                           species == "O3"~1-1/exp(concentration*.00048*2)),
+         M_all= as.numeric(BM)*af_all*10)
+test
+
+city<-test%>%  
+   group_by(city,status,species,region,city_new)%>%
+  summarize(pop_1=sum(as.numeric(pop)),
+            M_all=sum(M_all)/as.numeric(pop_1)*1000)
+
+region<-test%>%
+  group_by(region,status,species)%>%
+  summarize(pop_1=sum(as.numeric(pop)),
+            M_all=sum(M_all)/as.numeric(pop_1)*1000)
+region
+```
+
+## Create graph for each city
+```{r}
+observed<-city%>%
+  filter(status == "3.post-observed")
+
+predicted<-city%>%
+  filter(status == "3.post-predicted")
+
+ggplot()+
+  geom_bar(predicted,mapping= aes(x=city_new,y=M_all,),fill ="red", width=0.3,position = position_stack(),stat = "identity")+
+  geom_text(predicted,mapping=aes(x=city_new, y=M_all,label=round(M_all,2),group=species), position=position_stack(vjust= .5),size=2)+
+  geom_bar(observed,mapping= aes(x=city_new,y=M_all),fill="blue", width=0.3,position = position_stack(),stat = "identity")+
+  geom_text(observed,mapping=aes(x=city_new, y=M_all,label= round(M_all,2),group=species), position=position_stack(vjust=.5),size=2)+
+  theme_bw()+
+labs(title = "Health Burden", y ="Mortality Per thousand people" )+ 
+  theme(plot.title = element_text(hjust = 0.5),axis.text.x = element_text(vjust = 0.5, hjust=1))+
+  coord_flip()
+
+
+```
+
+##Create graph for each region
+```{r}
+predicted<-filter(region, status == "3.post-predicted")
+observed<-filter(region, status == "3.post-observed")
+
+ggplot()+
+  geom_bar(predicted,mapping= aes(x=region,y=M_all,fill="red"), width=0.6,position = position_stack(),stat = "identity")+
+  geom_text(predicted,mapping=aes(x=region, y=M_all,label=round(M_all,2),group=species), position=position_stack(vjust= .5),size=2.5)+
+  geom_bar(observed,mapping= aes(x=region,y=M_all,fill="blue"), width=0.6,position = position_stack(),stat = "identity")+
+  geom_text(observed,mapping=aes(x=region, y=M_all,label= round(M_all,2),group=species), position=position_stack(vjust=.5),size=2.5)+
+  theme_bw()+
+labs(title = "Health Burden", y ="Mortality Per thousand people" )+ 
+  theme(plot.title = element_text(hjust = 0.5),axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+```
+
+
+
